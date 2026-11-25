@@ -1,0 +1,347 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Hisobchi</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+/* Layout: ixcham kalkulyator ustuni + yon ustunda reklama va hamkor takliflari; telefonda bir ustun */
+:root {
+  --bg: #F2F5F4;
+  --surface: #FFFFFF;
+  --ink: #14211E;
+  --muted: #566763;
+  --line: #D5DEDB;
+  --accent: #0E6B63;
+  --accent-ink: #FFFFFF;
+  --soft: #E3F0EE;
+  --warm: #9A5F0B;
+  --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1614; --surface: #15211E; --ink: #E8F0EE; --muted: #9BB0AB;
+    --line: #273834; --accent: #3CC0B1; --accent-ink: #06211E; --soft: #173430; --warm: #E0A94A;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1614; --surface: #15211E; --ink: #E8F0EE; --muted: #9BB0AB;
+  --line: #273834; --accent: #3CC0B1; --accent-ink: #06211E; --soft: #173430; --warm: #E0A94A;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 16px; line-height: 1.55;
+  padding-block: 20px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 1080px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; }
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.15; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.brand { font-family: var(--font-display); font-weight: 700; font-size: 1.35rem; letter-spacing: -0.01em; display: flex; align-items: center; gap: 10px; }
+.mark { width: 28px; height: 28px; border-radius: 7px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font-size: 1rem; }
+.top small { color: var(--muted); font-size: 0.85rem; }
+.hero { display: flex; flex-direction: column; gap: 10px; max-width: 640px; }
+.hero h1 { font-size: clamp(1.7rem, 4.6vw, 2.5rem); font-weight: 700; letter-spacing: -0.02em; }
+.hero p { color: var(--muted); }
+
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 24px; align-items: start; }
+.main { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+.side { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+
+.tabs { display: flex; gap: 6px; background: var(--soft); padding: 5px; border-radius: 12px; width: fit-content; max-width: 100%; }
+.tab { font: inherit; font-weight: 600; font-size: 0.95rem; padding: 9px 18px; border: 0; background: transparent; color: var(--muted); border-radius: 8px; cursor: pointer; }
+.tab[aria-selected="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.12); }
+.tab:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.calc { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; }
+.calc[hidden] { display: none; }
+.form { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.field label { font-size: 0.85rem; font-weight: 600; color: var(--muted); }
+.field input, .field select { font: inherit; width: 100%; min-width: 0; padding: 11px 12px; border: 1px solid var(--line); border-radius: 9px; background: var(--bg); color: var(--ink); font-variant-numeric: tabular-nums; }
+.field .hint { font-size: 0.82rem; color: var(--muted); font-variant-numeric: tabular-nums; min-height: 1.2em; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+details.rates { border: 1px dashed var(--line); border-radius: 9px; padding: 10px 12px; }
+details.rates summary { cursor: pointer; font-weight: 600; font-size: 0.9rem; color: var(--muted); }
+details.rates .row2 { margin-top: 12px; }
+details.rates .field.full { margin-top: 12px; }
+
+.result { display: flex; flex-direction: column; gap: 16px; min-width: 0; background: var(--soft); border-radius: 12px; padding: 20px; }
+.result .label { font-size: 0.85rem; font-weight: 600; color: var(--muted); }
+.big { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.7rem, 5vw, 2.3rem); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; line-height: 1.1; overflow-wrap: anywhere; }
+.big small { font-size: 0.5em; font-weight: 500; color: var(--muted); margin-left: 4px; }
+dl.kv { margin: 0; display: flex; flex-direction: column; gap: 8px; }
+dl.kv div { display: flex; justify-content: space-between; gap: 12px; border-top: 1px solid var(--line); padding-top: 8px; font-size: 0.95rem; }
+dl.kv dt { color: var(--muted); }
+dl.kv dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; text-align: right; }
+dd.warm { color: var(--warm); }
+.bar { display: flex; height: 12px; border-radius: 6px; overflow: hidden; background: var(--line); }
+.bar span:first-child { background: var(--accent); }
+.bar span:last-child { background: var(--warm); }
+.legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 0.82rem; color: var(--muted); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; }
+.err { color: var(--warm); font-weight: 600; }
+
+.schedule { grid-column: 1 / -1; min-width: 0; }
+.schedule summary { cursor: pointer; font-weight: 600; }
+.tablewrap { overflow-x: auto; margin-top: 12px; max-height: 360px; overflow-y: auto; border: 1px solid var(--line); border-radius: 9px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+th, td { padding: 8px 12px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--line); }
+th:first-child, td:first-child { text-align: left; }
+thead th { position: sticky; top: 0; background: var(--surface); color: var(--muted); font-size: 0.8rem; }
+
+.ad { border: 1px dashed var(--line); border-radius: 10px; background: var(--surface); display: grid; place-items: center; text-align: center; padding: 14px; color: var(--muted); font-size: 0.8rem; }
+.ad b { display: block; color: var(--ink); font-size: 0.85rem; margin-bottom: 2px; }
+.ad.wide { min-height: 90px; }
+.ad.tall { min-height: 250px; }
+.offers { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.offers h3 { font-size: 1rem; }
+.offers .note { font-size: 0.78rem; color: var(--muted); }
+.offer { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding-top: 12px; border-top: 1px solid var(--line); }
+.offer strong { display: block; font-size: 0.95rem; }
+.offer span { font-size: 0.82rem; color: var(--muted); }
+.btn { font: inherit; font-weight: 600; font-size: 0.85rem; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--accent); color: var(--accent); background: transparent; white-space: nowrap; cursor: default; }
+
+.info { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+.info article { display: flex; flex-direction: column; gap: 8px; }
+.info h3 { font-size: 1.05rem; }
+.info p { color: var(--muted); font-size: 0.95rem; max-width: 65ch; }
+.faq { display: flex; flex-direction: column; gap: 0; max-width: 760px; }
+.faq h2 { font-size: 1.3rem; margin-bottom: 8px; }
+.faq details { border-top: 1px solid var(--line); padding: 12px 0; }
+.faq summary { cursor: pointer; font-weight: 600; }
+.faq details p { color: var(--muted); margin-top: 8px; font-size: 0.95rem; max-width: 65ch; }
+footer { color: var(--muted); font-size: 0.82rem; border-top: 1px solid var(--line); padding-top: 16px; max-width: 760px; }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: minmax(0, 1fr); }
+  .calc { grid-template-columns: minmax(0, 1fr); }
+  .info { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 420px) { .tab { padding: 9px 12px; } .row2 { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; animation: none !important; } }
+</style>
+
+<div class="wrap">
+  <div class="top">
+    <div class="brand"><span class="mark" aria-hidden="true">₷</span> Hisobchi</div>
+    <small>So'm hisobidagi kalkulyatorlar</small>
+  </div>
+
+  <section class="hero">
+    <h1>Kredit, omonat va ish haqini bir daqiqada hisoblang</h1>
+    <p>Ro'yxatdan o'tish shart emas. Raqamlarni kiriting, natija darhol chiqadi.</p>
+  </section>
+
+  <div class="ad wide" data-slot="top-banner"><div><b>Reklama joyi · 728×90</b>Bu yerga reklama tarmog'i kodi qo'yiladi</div></div>
+
+  <div class="layout">
+    <div class="main">
+      <div class="tabs" role="tablist" aria-label="Kalkulyator turi">
+        <button class="tab" role="tab" id="t-kredit" aria-controls="p-kredit" aria-selected="true" data-tab="kredit">Kredit</button>
+        <button class="tab" role="tab" id="t-omonat" aria-controls="p-omonat" aria-selected="false" data-tab="omonat">Omonat</button>
+        <button class="tab" role="tab" id="t-maosh" aria-controls="p-maosh" aria-selected="false" data-tab="maosh">Ish haqi</button>
+      </div>
+
+      <!-- KREDIT -->
+      <section class="calc" id="p-kredit" role="tabpanel" aria-labelledby="t-kredit">
+        <div class="form">
+          <div class="field"><label for="k-sum">Kredit summasi (so'm)</label><input id="k-sum" type="number" min="0" step="1000000" value="50000000" inputmode="numeric"><div class="hint" id="k-sum-h"></div></div>
+          <div class="row2">
+            <div class="field"><label for="k-rate">Yillik foiz (%)</label><input id="k-rate" type="number" min="0" step="0.5" value="24" inputmode="decimal"></div>
+            <div class="field"><label for="k-term">Muddat (oy)</label><input id="k-term" type="number" min="1" max="360" step="1" value="24" inputmode="numeric"></div>
+          </div>
+          <div class="field"><label for="k-type">To'lov turi</label>
+            <select id="k-type"><option value="ann">Annuitet (har oy bir xil to'lov)</option><option value="diff">Differensial (to'lov kamayib boradi)</option></select>
+          </div>
+        </div>
+        <div class="result" id="k-out" aria-live="polite"></div>
+        <details class="schedule"><summary>To'lov jadvalini ko'rsatish</summary><div class="tablewrap" id="k-table"></div></details>
+      </section>
+
+      <!-- OMONAT -->
+      <section class="calc" id="p-omonat" role="tabpanel" aria-labelledby="t-omonat" hidden>
+        <div class="form">
+          <div class="field"><label for="o-sum">Boshlang'ich summa (so'm)</label><input id="o-sum" type="number" min="0" step="1000000" value="10000000" inputmode="numeric"><div class="hint" id="o-sum-h"></div></div>
+          <div class="field"><label for="o-add">Oylik qo'shimcha (so'm)</label><input id="o-add" type="number" min="0" step="100000" value="1000000" inputmode="numeric"><div class="hint" id="o-add-h"></div></div>
+          <div class="row2">
+            <div class="field"><label for="o-rate">Yillik foiz (%)</label><input id="o-rate" type="number" min="0" step="0.5" value="18" inputmode="decimal"></div>
+            <div class="field"><label for="o-term">Muddat (oy)</label><input id="o-term" type="number" min="1" max="360" step="1" value="12" inputmode="numeric"></div>
+          </div>
+        </div>
+        <div class="result" id="o-out" aria-live="polite"></div>
+      </section>
+
+      <!-- ISH HAQI -->
+      <section class="calc" id="p-maosh" role="tabpanel" aria-labelledby="t-maosh" hidden>
+        <div class="form">
+          <div class="field"><label for="m-mode">Nimani hisoblaymiz?</label>
+            <select id="m-mode"><option value="gross">Hisoblangan maoshdan qo'lga tegadigani</option><option value="net">Qo'lga tegadigan maoshdan hisoblangani</option></select>
+          </div>
+          <div class="field"><label for="m-sum" id="m-sum-l">Hisoblangan maosh (so'm)</label><input id="m-sum" type="number" min="0" step="100000" value="5000000" inputmode="numeric"><div class="hint" id="m-sum-h"></div></div>
+          <details class="rates"><summary>Soliq stavkalari</summary>
+            <div class="row2">
+              <div class="field"><label for="m-jshds">JShDS (%)</label><input id="m-jshds" type="number" min="0" step="0.1" value="12"></div>
+              <div class="field"><label for="m-inps">INPS (%)</label><input id="m-inps" type="number" min="0" step="0.1" value="0.1"></div>
+            </div>
+            <div class="field full"><label for="m-soc">Ijtimoiy soliq, ish beruvchi (%)</label><input id="m-soc" type="number" min="0" step="0.1" value="12"></div>
+          </details>
+        </div>
+        <div class="result" id="m-out" aria-live="polite"></div>
+      </section>
+    </div>
+
+    <aside class="side">
+      <div class="ad tall" data-slot="sidebar"><div><b>Reklama joyi · 300×250</b>Yon ustun uchun reklama bloki</div></div>
+      <div class="offers">
+        <h3>Hamkor takliflar</h3>
+        <p class="note">Quyidagilar namuna. Haqiqiy hamkorlik havolalaringiz shu yerga qo'yiladi.</p>
+        <div class="offer"><div><strong>Bank nomi</strong><span>Kredit · yillik 0% dan</span></div><span class="btn">Batafsil</span></div>
+        <div class="offer"><div><strong>Bank nomi</strong><span>Omonat · yillik 0% gacha</span></div><span class="btn">Batafsil</span></div>
+        <div class="offer"><div><strong>Sug'urta kompaniyasi</strong><span>Kredit sug'urtasi</span></div><span class="btn">Batafsil</span></div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="ad wide" data-slot="mid-banner"><div><b>Reklama joyi · 728×90</b>Maqolalar oldidan</div></div>
+
+  <section class="info">
+    <article><h3>Annuitet va differensial farqi</h3><p>Annuitetda har oy bir xil summa to'laysiz, shuning uchun byudjetni rejalash oson. Differensialda birinchi oylar og'ir, lekin umumiy foiz to'lovi kamroq chiqadi.</p></article>
+    <article><h3>Omonatda foiz ustiga foiz</h3><p>Foiz har oy asosiy summaga qo'shilsa, keyingi oy foiz kattaroq summadan hisoblanadi. Muddat uzayganda farq sezilarli bo'ladi.</p></article>
+    <article><h3>Kredit olishdan oldin</h3><p>Faqat oylik to'lovga emas, umumiy ortiqcha to'lovga qarang. Komissiya va sug'urta to'lovlarini shartnomadan alohida so'rang.</p></article>
+  </section>
+
+  <section class="faq">
+    <h2>Ko'p so'raladigan savollar</h2>
+    <details><summary>Natijalar bankdagi hisobga to'liq mos keladimi?</summary><p>Yo'q, bu taxminiy hisob. Banklar komissiya, sug'urta va kunlar sonini hisobga olishi mumkin, shuning uchun yakuniy summani bankdan aniqlang.</p></details>
+    <details><summary>Ish haqi stavkalari o'zgarsa nima qilaman?</summary><p>"Soliq stavkalari" bo'limida har bir stavkani o'zingiz o'zgartirishingiz mumkin. Joriy stavkalarni soliq organining rasmiy manbasidan tekshiring.</p></details>
+    <details><summary>Kiritgan raqamlarim saqlanadimi?</summary><p>Yo'q. Barcha hisob-kitob brauzeringizda bajariladi, ma'lumot hech qayerga yuborilmaydi.</p></details>
+  </section>
+
+  <footer>Hisobchi ma'lumot berish maqsadida yaratilgan va moliyaviy maslahat hisoblanmaydi. Muhim qaror qabul qilishdan oldin bank yoki mutaxassis bilan maslahatlashing.</footer>
+</div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var fmt = function (n) { return Math.round(n).toLocaleString("ru-RU"); };
+  var money = function (n) { return fmt(n) + "<small>so'm</small>"; };
+  var num = function (id) { var v = parseFloat($(id).value); return isFinite(v) ? v : NaN; };
+  var hint = function (id, v) { $(id).textContent = isFinite(v) && v > 0 ? "= " + fmt(v) + " so'm" : ""; };
+  var bar = function (a, b, la, lb) {
+    var t = a + b || 1, pa = Math.max(0, Math.min(100, (a / t) * 100));
+    return '<div class="bar" role="img" aria-label="' + la + ' ' + Math.round(pa) + '%, ' + lb + ' ' + Math.round(100 - pa) + '%"><span style="width:' + pa + '%"></span><span style="width:' + (100 - pa) + '%"></span></div>' +
+      '<div class="legend"><span><i style="background:var(--accent)"></i>' + la + '</span><span><i style="background:var(--warm)"></i>' + lb + '</span></div>';
+  };
+
+  /* ---------- Kredit ---------- */
+  function loanRows(P, rate, n, type) {
+    var r = rate / 1200, bal = P, rows = [], total = 0, i, pay, interest, principal;
+    var ann = r === 0 ? P / n : (P * r) / (1 - Math.pow(1 + r, -n));
+    for (i = 1; i <= n; i++) {
+      interest = bal * r;
+      if (type === "ann") { pay = ann; principal = pay - interest; }
+      else { principal = P / n; pay = principal + interest; }
+      bal = Math.max(0, bal - principal);
+      total += pay;
+      rows.push({ i: i, pay: pay, principal: principal, interest: interest, bal: bal });
+    }
+    return { rows: rows, total: total };
+  }
+  function renderLoan() {
+    var P = num("k-sum"), rate = num("k-rate"), n = Math.round(num("k-term")), type = $("k-type").value;
+    hint("k-sum-h", P);
+    var out = $("k-out");
+    if (!(P > 0) || !(rate >= 0) || !(n >= 1) || n > 360) {
+      out.innerHTML = '<p class="err">Summa, foiz va muddatni to\'g\'ri kiriting (muddat 1 dan 360 oygacha).</p>';
+      $("k-table").innerHTML = ""; return;
+    }
+    var res = loanRows(P, rate, n, type), rows = res.rows, over = res.total - P;
+    var head = type === "ann"
+      ? '<div><div class="label">Oylik to\'lov</div><div class="big">' + money(rows[0].pay) + '</div></div>'
+      : '<div><div class="label">Birinchi oy to\'lovi</div><div class="big">' + money(rows[0].pay) + '</div></div>';
+    var kv = '<dl class="kv">' +
+      (type === "diff" ? '<div><dt>Oxirgi oy to\'lovi</dt><dd>' + fmt(rows[n - 1].pay) + ' so\'m</dd></div>' : '') +
+      '<div><dt>Jami to\'lov</dt><dd>' + fmt(res.total) + ' so\'m</dd></div>' +
+      '<div><dt>Ortiqcha to\'lov (foiz)</dt><dd class="warm">' + fmt(over) + ' so\'m</dd></div></dl>';
+    out.innerHTML = head + bar(P, over, "Asosiy qarz", "Foiz") + kv;
+    var t = '<table><thead><tr><th>Oy</th><th>To\'lov</th><th>Asosiy qarz</th><th>Foiz</th><th>Qoldiq</th></tr></thead><tbody>';
+    rows.forEach(function (x) { t += "<tr><td>" + x.i + "</td><td>" + fmt(x.pay) + "</td><td>" + fmt(x.principal) + "</td><td>" + fmt(x.interest) + "</td><td>" + fmt(x.bal) + "</td></tr>"; });
+    $("k-table").innerHTML = t + "</tbody></table>";
+  }
+
+  /* ---------- Omonat ---------- */
+  function depositCalc(P0, add, rate, n) {
+    var r = rate / 1200, bal = P0, i;
+    for (i = 0; i < n; i++) { bal = bal * (1 + r) + add; }
+    var invested = P0 + add * n;
+    return { final: bal, invested: invested, interest: bal - invested };
+  }
+  function renderDeposit() {
+    var P = num("o-sum"), add = num("o-add"), rate = num("o-rate"), n = Math.round(num("o-term"));
+    hint("o-sum-h", P); hint("o-add-h", add);
+    var out = $("o-out");
+    if (!(P >= 0) || !(add >= 0) || !(rate >= 0) || !(n >= 1) || n > 360 || (P === 0 && add === 0)) {
+      out.innerHTML = '<p class="err">Summa, foiz va muddatni to\'g\'ri kiriting (muddat 1 dan 360 oygacha).</p>'; return;
+    }
+    var d = depositCalc(P, add, rate, n);
+    out.innerHTML = '<div><div class="label">Muddat oxiridagi summa</div><div class="big">' + money(d.final) + '</div></div>' +
+      bar(d.invested, d.interest, "Kiritilgan mablag'", "Foiz daromadi") +
+      '<dl class="kv"><div><dt>Kiritilgan mablag\'</dt><dd>' + fmt(d.invested) + ' so\'m</dd></div>' +
+      '<div><dt>Foiz daromadi</dt><dd class="warm">' + fmt(d.interest) + ' so\'m</dd></div>' +
+      '<div><dt>Foiz har oy qo\'shiladi</dt><dd>Ha</dd></div></dl>';
+  }
+
+  /* ---------- Ish haqi ---------- */
+  function renderSalary() {
+    var mode = $("m-mode").value, v = num("m-sum"), j = num("m-jshds") / 100, p = num("m-inps") / 100, s = num("m-soc") / 100;
+    $("m-sum-l").textContent = mode === "gross" ? "Hisoblangan maosh (so'm)" : "Qo'lga tegadigan maosh (so'm)";
+    hint("m-sum-h", v);
+    var out = $("m-out");
+    if (!(v > 0) || !isFinite(j) || !isFinite(p) || !isFinite(s) || j < 0 || p < 0 || s < 0 || j + p >= 1) {
+      out.innerHTML = '<p class="err">Summa va stavkalarni to\'g\'ri kiriting.</p>'; return;
+    }
+    var gross = mode === "gross" ? v : v / (1 - j - p);
+    var tax = gross * j, inps = gross * p, net = gross - tax - inps, social = gross * s;
+    out.innerHTML = '<div><div class="label">' + (mode === "gross" ? "Qo'lga tegadigan maosh" : "Hisoblangan maosh") + '</div><div class="big">' + money(mode === "gross" ? net : gross) + '</div></div>' +
+      bar(net, tax + inps, "Qo'lga tegadi", "Soliq va INPS") +
+      '<dl class="kv"><div><dt>Hisoblangan maosh</dt><dd>' + fmt(gross) + ' so\'m</dd></div>' +
+      '<div><dt>JShDS</dt><dd class="warm">' + fmt(tax) + ' so\'m</dd></div>' +
+      '<div><dt>INPS</dt><dd class="warm">' + fmt(inps) + ' so\'m</dd></div>' +
+      '<div><dt>Ish beruvchining jami xarajati</dt><dd>' + fmt(gross + social) + ' so\'m</dd></div></dl>';
+  }
+
+  /* ---------- Tablar va hodisalar ---------- */
+  var tabs = ["kredit", "omonat", "maosh"];
+  function showTab(name) {
+    if (tabs.indexOf(name) < 0) name = "kredit";
+    tabs.forEach(function (t) {
+      var sel = t === name;
+      $("t-" + t).setAttribute("aria-selected", sel ? "true" : "false");
+      $("p-" + t).hidden = !sel;
+    });
+  }
+  tabs.forEach(function (t) {
+    $("t-" + t).addEventListener("click", function () {
+      showTab(t);
+      try { history.replaceState(null, "", "#" + t); } catch (e) { location.hash = t; }
+    });
+  });
+  window.addEventListener("hashchange", function () { showTab(location.hash.slice(1)); });
+
+  ["k-sum", "k-rate", "k-term", "k-type"].forEach(function (id) { $(id).addEventListener("input", renderLoan); });
+  ["o-sum", "o-add", "o-rate", "o-term"].forEach(function (id) { $(id).addEventListener("input", renderDeposit); });
+  ["m-mode", "m-sum", "m-jshds", "m-inps", "m-soc"].forEach(function (id) { $(id).addEventListener("input", renderSalary); });
+
+  renderLoan(); renderDeposit(); renderSalary();
+  showTab(location.hash.slice(1));
+
+  window.__hisobchi = { loanRows: loanRows, depositCalc: depositCalc };
+})();
+</script>
+
+</body></html>
